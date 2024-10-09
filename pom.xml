@@ -1,0 +1,68 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: 'Изберете версия')
+        booleanParam(name: 'executeTests', defaultValue: true, description: 'Искате ли да изпълните тестовете?')
+    }
+
+    stages {
+        stage("Clone Repository") {
+            steps {
+                script {
+                 
+                    git 'https://github.com/KameliaSGithub/Jenkins_GitLab_MultiPipeline.git'
+                }
+            }
+        }
+
+        stage("Build with Maven") {
+            steps {
+                script {
+                    
+                    sh 'mvn clean install'
+                }
+            }
+        }
+
+        stage("Run Tests") {
+            when {
+                expression {
+                    params.executeTests
+                }
+            }
+            steps {
+                script {
+                  
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage("Build Docker Image") {
+            steps {
+                script {
+                    
+                    sh 'docker build -t Jenkins_MultiBranch_Pipeline .'
+                }
+            }
+        }
+
+        stage("Run Docker Container") {
+            steps {
+                script {
+                    
+                    sh 'docker run -d -p 8080:8080 Jenkins_MultiBranch_Pipeline'
+                }
+            }
+        }
+        
+        stage("Deploy Application") {
+            steps {
+                script {
+                    gv.deployApp()
+                }
+            }
+        }
+    }
+}
