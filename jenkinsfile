@@ -10,7 +10,7 @@ pipeline {
         stage("Clone Repository") {
             steps {
                 script {
-                    git 'https://github.com/KameliaSGithub/Jenkins_GitLab_MultiPipeline.git'  // Уверете се, че URL адресът е правилен
+                    git 'https://github.com/KameliaSGithub/Jenkins_GitLab_MultiPipeline.git'  
                 }
             }
         }
@@ -71,11 +71,11 @@ pipeline {
 
     post {
         always {
-            echo 'Pipeline завърши!'
+            echo 'Pipeline finish!'
         }
 
         failure {
-            echo 'Pipeline неуспешен!'
+            echo 'Pipeline failed!'
         }
     }
 }
